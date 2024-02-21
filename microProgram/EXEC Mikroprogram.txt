@@ -1,0 +1,16 @@
+step00 br(if notEXEC then step00)
+step01 br(case(HALT, RTS, RTI, ROR, RORC, PUSHPSW, POPPSW, STIVTP, BGREU, BLSSU, BLEQU, JGRT, JLEQ, JMP, JSR, LD, ST, ADD, DEC, OR, STRFIND)
+
+then (HALT, stepXX), (RTS, stepXX), (RTI, stepXX), (ROR, stepXX), (RORC, stepXX), (PUSHPSW, stepXX),(POPPSW, stepXX), (STIVTP, stepXX), (BGREU, stepXX), (BLSSU, stepXX), (BLEQU, stepXX), (JGRT, stepXX), (JLEQ, stepXX), (JMP, stepXX), (JSR, stepXX), (LD, step02), (ST, step04), (ADD, stepXX), (DEC, stepXX), (OR, stepXX), (STRFIND, stepXX))
+
+//-------------LD-------------
+step02 ldA
+step03 ldN, ldZ, br stepINTR
+
+//------------ST-------------
+step04 br(if regdir then stepREG)
+step05 mxMDRO, ldMDR
+step06 wrMEM, br(if notFCBUS then step06)
+step07 mxMDR1, ldMDR, incMAR
+step08 wrMEM, br(if notFCBUS then step08)
+step09 br stepINTR

@@ -1,0 +1,47 @@
+step00 br(if notADDR then step00)
+step01 br(case(immed, memdir, memind, regind, preincr, postdec, regdir) then (immed, step02), (memdir, step03), (memind, step04), (regind, step0C), (preincr, step0D), (postdec, step11), (regdir, step15))
+
+//------------IMMED------------
+step02 ldB, mxB0, br step1E
+
+//------------MEMDIR------------
+step03 ldMAR, mxMAR0, br step17
+
+//------------MEMIND------------
+step04 ldMAR, mxMAR0, clCNTB
+step05 rdMEM, ldMDR, br(if notFCBUS then step05)
+step06 ldB15..8, incMAR
+step07 incCNTB
+step08 rdMEM, ldMDR, br(if notFCBUS then step08)
+step09 ldB7..0
+step0A ldB
+step0B mxMAR0, mxMAR1, ldMAR, br step17
+
+//------------REGIND------------
+step0C mxMAR1, ldMAR, br step17
+
+//------------PREINCR------------
+step0D mxB1, ldB
+step0E incB
+step0F incB
+step10 mxMAR0, mxMAR1, ldMAR, wrGPR, br step17
+
+//------------POSTDEC------------
+step11 mxMAR1, ldMAR, mxB1, ldB
+step12 decB
+step13 decB
+step14 wrGPR, br step17
+
+//------------REGDIR------------
+step15 br(if STORE then step1E)
+step16 mxB1, ldB, br step1E
+
+//-----------read tj. na mom dijagramu 8-----
+step17 clCNTB, br(if STORE then step1E)
+step18 rdMEM, ldMDR, br(if notFCBUS then step18)
+step19 ldB15..8, incMAR
+step1A incCNTB
+step1B rdMEM, ldMDR, br(if notFCBUS then step1B)
+step1C ldB7..0
+step1D ldB
+step1E clADDR, stEXEC, br step00
